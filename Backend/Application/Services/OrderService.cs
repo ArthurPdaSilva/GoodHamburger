@@ -1,8 +1,12 @@
 ﻿using Application.DTOs.OrderDTOs;
+using Application.DTOs.OrderItemDTOs;
 using Application.Services.Interfaces;
+using Application.Utils;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Repositories.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Services
 {
@@ -17,10 +21,46 @@ namespace Application.Services
             _mapper = mapper;
         }
 
+        private void ValidateOrderItems(IList<OrderItemDTO> items)
+        {
+            if (items == null || !items.Any())
+            {
+                throw new ArgumentException("O pedido deve conter pelo menos um item.");
+            }
+            var duplicateTypes = items
+                                .GroupBy(item => item.Type)
+                                .Where(g => g.Count() > 1)
+                                .Select(g => g.Key)
+                                .ToList();
+            if (duplicateTypes.Any())
+            {
+                var duplicateTypesString = string.Join(", ", duplicateTypes.Select(MenuItemTypeTranslator.ToFriendlyString));
+                throw new ArgumentException($"O pedido não pode conter itens duplicados do mesmo tipo: {duplicateTypesString}");
+            }
+        }
+
+        private float CalculateTotalWithDiscount(IList<OrderItemDTO> items)
+        {
+            var hasSandwich = items.Any(i => i.Type == MenuItemType.Main);
+            var hasFries = items.Any(i => i.Type == MenuItemType.Side);
+            var hasSoda = items.Any(i => i.Type == MenuItemType.Drink);
+            var subTotal = items.Sum(i => i.Price);
+            var discount = 1.0f;
+            if (hasSandwich && hasFries && hasSoda)
+                discount = 0.80f;
+            else if (hasSandwich && hasSoda)
+                discount = 0.85f; 
+            else if (hasSandwich && hasFries)
+                discount = 0.90f; 
+            return subTotal * discount;
+        }
+
         public async Task CreateAsync(OrderDTO dto)
         {
-            var entity = _mapper.Map<Order>(dto);
+            ValidateOrderItems(dto.Items);
+            CalculateTotalWithDiscount(dto.Items);
 
+            var entity = _mapper.Map<Order>(dto);
             foreach (var item in entity.Items)
             {
                 item.Order = entity;
@@ -33,7 +73,7 @@ namespace Application.Services
         public async Task DeleteAsync(Guid id)
         {
             var entity = await _orderRepository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException("Order not found.");
+                ?? throw new KeyNotFoundException("Pedido não encontrado.");
 
             await _orderRepository.DeleteAsync(entity);
         }
@@ -47,15 +87,18 @@ namespace Application.Services
         public async Task<OrderDTO> GetByIdAsync(Guid id)
         {
             var entity = await _orderRepository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException("Order not found.");
+                ?? throw new KeyNotFoundException("Pedido não encontrado.");
 
             return _mapper.Map<OrderDTO>(entity);
         }
 
         public async Task UpdateAsync(Guid id, OrderDTO dto)
         {
+            ValidateOrderItems(dto.Items);
+            CalculateTotalWithDiscount(dto.Items);
+
             var existingEntity = await _orderRepository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException("Order not found.");
+                ?? throw new KeyNotFoundException("Pedido não encontrado.");
 
             var createdAt = existingEntity.CreatedAt;
 
