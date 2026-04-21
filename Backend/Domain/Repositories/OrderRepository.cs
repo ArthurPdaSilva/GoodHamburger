@@ -4,9 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Repositories
 {
-    /// <summary>
-    /// Repositório único de Categoria
-    /// </summary>
     public class OrderRepository : IOrderRepository
     {
         private readonly ApplicationDbContext _context;
@@ -25,12 +22,18 @@ namespace Domain.Repositories
         public async Task<IList<Order>> GetAllAsync()
         {
             //AsNoTracking é para ele não gastar processamento trackeando em consultas
-            return await _context.Orders.OrderByDescending(x => x.CreatedAt).AsNoTracking().ToListAsync();
+            return await _context.Orders
+                .Include(x => x.Items)
+                .OrderByDescending(x => x.CreatedAt)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Order?> GetByIdAsync(Guid id)
         {
-            return await _context.Orders.FindAsync(id);
+            return await _context.Orders
+                .Include(x => x.Items)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task UpdateAsync(Order entity)

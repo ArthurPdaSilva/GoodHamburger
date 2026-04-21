@@ -1,9 +1,16 @@
-﻿namespace Application.Services.Interfaces
+﻿using Application.DTOs.OrderDTOs;
+
+namespace Application.Services.Interfaces
 {
-    /// <summary>
-    /// Interface que delimita as funções que Order service terá acesso
-    /// </summary>
-    public interface IOrderService : IGenericService<CategoryDTO, CategoryListDTO>
+    public interface IOrderService 
     {
+        Task CreateAsync(OrderDTO dto);
+
+        Task UpdateAsync(Guid id, OrderDTO dto);
+
+        Task DeleteAsync(Guid id);
+
+        Task<IList<OrderListDTO>> GetAllAsync();
+        Task<OrderDTO> GetByIdAsync(Guid id);
     }
 }

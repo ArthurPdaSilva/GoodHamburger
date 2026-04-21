@@ -1,11 +1,10 @@
 ﻿using Domain.Enums;
 
-namespace Domain.Entities
+namespace Application.DTOs.OrderItemDTOs
 {
-    public class OrderItem : BaseEntity
+    public class OrderItemDTO
     {
-        public Guid OrderId { get; set; }
-        public required Order Order { get; set; }
+        public Guid Id { get; set; }
         public Guid MenuItemId { get; set; }
         public required MenuItemType Type { get; set; }
         public required string Name { get; set; }

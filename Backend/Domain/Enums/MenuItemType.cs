@@ -1,6 +1,6 @@
 ﻿namespace Domain.Enums
 {
-    public enum MenuItemType 
+    public enum MenuItemType
     {
         Main = 1,
         Side = 2,

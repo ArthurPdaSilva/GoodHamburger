@@ -32,12 +32,18 @@ Para rodar o projeto localmente, você vai precisar de:
   - Entidades: `BaseEntity`, `MenuItem`, `Order` e `OrderItem`
   - Enum: `MenuItemType`
   - Repositórios: As interfaces `IGenericRepository<T>` e `IOrderRepository` e o repositório concreto `OrderRepository` para abstrair o acesso aos dados, seguindo o princípio de inversão de dependência.
-  - Migrations: Histórico de alterações no banco de dados, permitindo a evolução do esquema ao longo do tempo. Eu criei um seed_bank para popular o banco com os MenuItens do desafio.
+  - Migrations: Não costumo subir as migrations para o repositório, mas posso disponibilizar um script SQL para criar as tabelas no banco de dados, caso seja necessário.
   - ApplicationDBContext: classe responsável por configurar o Entity Framework Core, o banco de dados PostgreSQL e todos as cofigurações sobre as entidades, foquei em manter as entities o mais simples possível, sem regras de negócio, apenas com as propriedades e as relações entre elas.
 - Na camada da `Web`:
   - Configuração do banco de dados utilizando Entity Framework Core com PostgreSQL
   - Connection String configurada no `appsettings.json` para conectar ao banco de dados local (Coloquei no User Secrets para não expor a senha do banco de dados)
   - Configuração do CORS para permitir requisições do frontend (Ainda será implementado)
   - Controller `OrdersController` para lidar com as requisições relacionadas aos pedidos, utilizando os serviços da camada `Application` para processar a lógica de negócio.
+  - Configuração do Swagger para documentação da API e testes das rotas.
 
 ## O que ficou de fora
+
+### Backend - Remoções
+
+- Removi o `IGenericService` e o `IGenericRepository`, pois só o `Order` possui um CRUD completo, seria Over Engineering manter essas interfaces no momento.
+- Autenticação, dado que não há um requisito claro para isso, e o foco do projeto é mais na modelagem do domínio e na implementação dos casos de uso relacionados aos pedidos e itens de menu.
