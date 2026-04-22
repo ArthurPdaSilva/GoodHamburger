@@ -54,12 +54,16 @@ namespace Application.Services
             }
         }
 
-        private float CalculateTotalWithDiscount(IList<OrderItemDTO> items)
+        private float CalculateSubTotal(IList<OrderItemDTO> items)
+        {
+            return items.Sum(i => i.Price);
+        }
+
+        private float CalculateTotalWithDiscount(IList<OrderItemDTO> items, float subTotal)
         {
             var hasSandwich = items.Any(i => i.Type == MenuItemType.Main);
             var hasFries = items.Any(i => i.Type == MenuItemType.Side);
             var hasSoda = items.Any(i => i.Type == MenuItemType.Drink);
-            var subTotal = items.Sum(i => i.Price);
             var discount = 1.0f;
             if (hasSandwich && hasFries && hasSoda)
                 discount = 0.80f;
@@ -74,7 +78,9 @@ namespace Application.Services
         {
             await EnsureMenuItemsExistAsync(dto.Items);
             ValidateOrderItems(dto.Items);
-            CalculateTotalWithDiscount(dto.Items);
+
+            dto.SubTotal = CalculateSubTotal(dto.Items);
+            dto.Total = CalculateTotalWithDiscount(dto.Items, dto.SubTotal);
 
             var entity = _mapper.Map<Order>(dto);
             foreach (var item in entity.Items)
@@ -112,7 +118,8 @@ namespace Application.Services
         {
             await EnsureMenuItemsExistAsync(dto.Items);
             ValidateOrderItems(dto.Items);
-            CalculateTotalWithDiscount(dto.Items);
+            dto.SubTotal = CalculateSubTotal(dto.Items);
+            dto.Total = CalculateTotalWithDiscount(dto.Items, dto.SubTotal);
 
             var existingEntity = await _orderRepository.GetByIdAsync(id)
                 ?? throw new KeyNotFoundException("Pedido não encontrado.");
