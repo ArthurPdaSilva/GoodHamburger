@@ -16,8 +16,22 @@ Para rodar o projeto localmente, você vai precisar de:
 - Node.js (versão LTS recomendada)
 - .NET SDK 10.0
 - PostgreSQL
+- Visual Studio (Aconselhável para desenvolvimento do backend, mas não é obrigatório)
+- Um editor de código (Eu uso e prefiro o VS Code)
 
 ## Instruções de Execução
+
+## Backend (recomendado: Visual Studio)
+
+### Passo a passo
+
+1. Abra a solução `Backend.slnx` no Visual Studio.  
+2. Defina o projeto **Web.csproj** como *Startup Project*.  
+3. Configure a connection string `DefaultConnection` via **User Secrets**
+4. Rode as migrations que estão na camada de `Domain` para criar as tabelas no banco de dados PostgreSQL. Você pode usar o comando `dotnet ef database update` ou um script SQL para criar as tabelas manualmente.
+5. Restaure e compile a solução.  
+6. Execute utilizando o perfil **https** conforme definido no `launchSettings.json`.  
+7. Acesse o Swagger na URL apresentada ao iniciar a API (ex.: `/swagger/index.html`).
 
 ## Decisão de arquitetura
 
