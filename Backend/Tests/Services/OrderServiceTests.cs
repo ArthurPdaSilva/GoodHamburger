@@ -13,6 +13,7 @@ namespace Tests.Services;
 public class OrderServiceTests
 {
     private Mock<IOrderRepository> _orderRepositoryMock = null!;
+    private Mock<IMenuItemRepository> _menuItemRepositoryMock = null!;
     private Mock<IMapper> _mapperMock = null!;
     private OrderService _sut = null!;
 
@@ -20,8 +21,31 @@ public class OrderServiceTests
     public void SetUp()
     {
         _orderRepositoryMock = new Mock<IOrderRepository>();
+        _menuItemRepositoryMock = new Mock<IMenuItemRepository>();
         _mapperMock = new Mock<IMapper>();
-        _sut = new OrderService(_orderRepositoryMock.Object, _mapperMock.Object);
+        _sut = new OrderService(_orderRepositoryMock.Object, _mapperMock.Object, _menuItemRepositoryMock.Object);
+    }
+
+    [Test]
+    public void CreateAsync_ShouldThrowArgumentException_WhenMenuItemDoesNotExist()
+    {
+        var missingMenuItemId = Guid.NewGuid();
+        var dto = new OrderDTO
+        {
+            Items = new List<OrderItemDTO>
+            {
+                CreateItemDto(MenuItemType.Main, 10f, missingMenuItemId)
+            }
+        };
+
+        _menuItemRepositoryMock
+            .Setup(repository => repository.GetByIdAsync(missingMenuItemId))
+            .ReturnsAsync((MenuItem?)null);
+
+        var action = async () => await _sut.CreateAsync(dto);
+
+        Assert.That(action, Throws.InstanceOf<ArgumentException>()
+            .With.Message.Contains("não encontrado"));
     }
 
     [Test]
@@ -41,14 +65,22 @@ public class OrderServiceTests
     [Test]
     public void CreateAsync_ShouldThrowArgumentException_WhenOrderHasDuplicateItemTypes()
     {
+        var menuItemId = Guid.NewGuid();
+
         var dto = new OrderDTO
         {
             Items = new List<OrderItemDTO>
             {
-                CreateItemDto(MenuItemType.Main, 10f),
-                CreateItemDto(MenuItemType.Main, 12f)
+                CreateItemDto(MenuItemType.Main, 10f, menuItemId),
+                CreateItemDto(MenuItemType.Main, 12f, menuItemId)
             }
         };
+
+        var menuItem = CreateMenuItem(menuItemId, "X-Burger", 22f, MenuItemType.Main);
+
+        _menuItemRepositoryMock
+           .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
+           .ReturnsAsync(menuItem);
 
         var action = async () => await _sut.CreateAsync(dto);
 
@@ -80,9 +112,15 @@ public class OrderServiceTests
             }
         };
 
+        var menuItem = CreateMenuItem(Guid.NewGuid(), "X-Burger", 22f, MenuItemType.Main);
+
         _mapperMock
             .Setup(m => m.Map<Order>(dto))
             .Returns(entity);
+
+        _menuItemRepositoryMock
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(menuItem);
 
         await _sut.CreateAsync(dto);
 
@@ -96,6 +134,12 @@ public class OrderServiceTests
     {
         var id = Guid.NewGuid();
         _orderRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync((Order?)null);
+
+        var menuItem = CreateMenuItem(Guid.NewGuid(), "X-Burger", 22f, MenuItemType.Main);
+
+        _menuItemRepositoryMock
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(menuItem);
 
         var action = async () => await _sut.DeleteAsync(id);
 
@@ -166,14 +210,22 @@ public class OrderServiceTests
     [Test]
     public async Task UpdateAsync_ShouldThrowArgumentException_WhenOrderHasDuplicateItemTypes()
     {
+        var menuItemId = Guid.NewGuid();
+
         var dto = new OrderDTO
         {
             Items = new List<OrderItemDTO>
             {
-                CreateItemDto(MenuItemType.Drink, 3f),
-                CreateItemDto(MenuItemType.Drink, 4f)
+                CreateItemDto(MenuItemType.Drink, 3f, menuItemId),
+                CreateItemDto(MenuItemType.Drink, 4f, menuItemId)
             }
         };
+
+        var menuItem = CreateMenuItem(menuItemId, "X-Burger", 22f, MenuItemType.Main);
+
+        _menuItemRepositoryMock
+           .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
+           .ReturnsAsync(menuItem);
 
         var action = async () => await _sut.UpdateAsync(Guid.NewGuid(), dto);
 
@@ -184,14 +236,21 @@ public class OrderServiceTests
     [Test]
     public async Task UpdateAsync_ShouldThrowKeyNotFoundException_WhenOrderDoesNotExist()
     {
+        var menuItemId = Guid.NewGuid();
         var id = Guid.NewGuid();
         var dto = new OrderDTO
         {
             Items = new List<OrderItemDTO>
             {
-                CreateItemDto(MenuItemType.Main, 22f)
+                CreateItemDto(MenuItemType.Main, 22f, menuItemId)
             }
         };
+
+        var menuItem = CreateMenuItem(menuItemId, "X-Burger", 22f, MenuItemType.Main);
+
+        _menuItemRepositoryMock
+           .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
+           .ReturnsAsync(menuItem);
 
         _orderRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync((Order?)null);
 
@@ -235,8 +294,13 @@ public class OrderServiceTests
             new() { Type = MenuItemType.Side, Name = "Batata", Price = 10f, OrderId = Guid.Empty, Order = new Order() }
         };
 
+        var menuItem = CreateMenuItem(Guid.NewGuid(), "X-Burger", 25f, MenuItemType.Main);
+
         _orderRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(existingEntity);
         _mapperMock.Setup(m => m.Map<IList<OrderItem>>(dto.Items)).Returns(mappedItems);
+        _menuItemRepositoryMock
+            .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(menuItem);
 
         await _sut.UpdateAsync(id, dto);
 
@@ -249,14 +313,25 @@ public class OrderServiceTests
         Assert.That(existingEntity.Items.All(i => ReferenceEquals(i.Order, existingEntity)), Is.True);
     }
 
-    private static OrderItemDTO CreateItemDto(MenuItemType type, float price)
+    private static OrderItemDTO CreateItemDto(MenuItemType type, float price, Guid? menuItemId = null)
     {
         return new OrderItemDTO
         {
-            MenuItemId = Guid.NewGuid(),
+            MenuItemId = menuItemId ?? Guid.NewGuid(),
             Type = type,
             Name = $"Item {type}",
             Price = price
+        };
+    }
+
+    private static MenuItem CreateMenuItem(Guid id, string name, float price, MenuItemType type)
+    {
+        return new MenuItem
+        {
+            Id = id,
+            Name = name,
+            Price = price,
+            Type = type
         };
     }
 }

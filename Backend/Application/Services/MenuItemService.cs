@@ -1,6 +1,8 @@
 ﻿using Application.DTOs.MenuItemDTOs;
+using Application.DTOs.OrderDTOs;
 using Application.Services.Interfaces;
 using AutoMapper;
+using Domain.Repositories;
 using Domain.Repositories.Interfaces;
 
 namespace Application.Services
@@ -22,5 +24,12 @@ namespace Application.Services
             return _mapper.Map<IList<MenuItemDTO>>(entities);
         }
 
+        public async Task<MenuItemDTO> GetByIdAsync(Guid id)
+        {
+            var entity = await _menuItemRepository.GetByIdAsync(id)
+                 ?? throw new KeyNotFoundException("Item não encontrado.");
+
+            return _mapper.Map<MenuItemDTO>(entity);
+        }
     }
 }

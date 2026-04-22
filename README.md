@@ -24,10 +24,10 @@ Para rodar o projeto localmente, você vai precisar de:
 ### Backend
 
 - Arquitetura em camadas, pois corroborará para o desenvolvimento de um sistema mais limpo com base nas noções do Clear Achitecture.
-  - Web: camada responsável por lidar com as requisições HTTP, controladores e rotas. (Enxergando apenas a camada Application e Domain)
-  - Application: camada responsável pela lógica de negócio, serviços e casos de uso.
-  - Domain: camada responsável por conter as entidades, regras de negócio
-  - Tests: camada responsável por conter os testes (Enxergando apenas a camada Application)
+  - `Web`: camada responsável por lidar com as requisições HTTP, controladores e rotas.
+  - `Application`: camada responsável pela lógica de negócio, serviços e casos de uso.
+  - `Domain`: camada responsável por conter as entidades, regras de negócio
+  - `Tests`: camada responsável por conter os testes
 - Modelagem de `Domain`:
   - Entidades: `BaseEntity`, `MenuItem`, `Order` e `OrderItem`
   - Enums: `MenuItemType`

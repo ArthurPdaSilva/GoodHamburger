@@ -17,5 +17,11 @@ namespace Domain.Repositories
         {
             return await _context.MenuItems.OrderByDescending(x => x.CreatedAt).AsNoTracking().ToListAsync();
         }
+
+        public async Task<MenuItem?> GetByIdAsync(Guid id)
+        {
+            return await _context.MenuItems
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

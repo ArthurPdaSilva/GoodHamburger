@@ -12,12 +12,26 @@ namespace Application.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IMenuItemRepository _menuItemRepository;
         private readonly IMapper _mapper;
 
-        public OrderService(IOrderRepository orderRepository, IMapper mapper)
+        public OrderService(IOrderRepository orderRepository, IMapper mapper, IMenuItemRepository menuItemRepository)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
+            _menuItemRepository = menuItemRepository;
+        }
+
+        private async Task EnsureMenuItemsExistAsync(IList<OrderItemDTO> items)
+        {
+            foreach (var item in items)
+            {
+                var menuItem = await _menuItemRepository.GetByIdAsync(item.MenuItemId);
+                if (menuItem == null)
+                {
+                    throw new ArgumentException($"Item do menu com ID {item.MenuItemId} não encontrado.");
+                }
+            }
         }
 
         private void ValidateOrderItems(IList<OrderItemDTO> items)
@@ -26,11 +40,13 @@ namespace Application.Services
             {
                 throw new ArgumentException("O pedido deve conter pelo menos um item.");
             }
+
             var duplicateTypes = items
                                 .GroupBy(item => item.Type)
                                 .Where(g => g.Count() > 1)
                                 .Select(g => g.Key)
                                 .ToList();
+
             if (duplicateTypes.Any())
             {
                 var duplicateTypesString = string.Join(", ", duplicateTypes.Select(MenuItemTypeTranslator.ToFriendlyString));
@@ -56,6 +72,7 @@ namespace Application.Services
 
         public async Task CreateAsync(OrderDTO dto)
         {
+            await EnsureMenuItemsExistAsync(dto.Items);
             ValidateOrderItems(dto.Items);
             CalculateTotalWithDiscount(dto.Items);
 
@@ -93,6 +110,7 @@ namespace Application.Services
 
         public async Task UpdateAsync(Guid id, OrderDTO dto)
         {
+            await EnsureMenuItemsExistAsync(dto.Items);
             ValidateOrderItems(dto.Items);
             CalculateTotalWithDiscount(dto.Items);
 

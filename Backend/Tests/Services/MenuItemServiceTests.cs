@@ -1,6 +1,4 @@
 using Application.DTOs.MenuItemDTOs;
-using Application.DTOs.OrderDTOs;
-using Application.Mapping;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
@@ -141,6 +139,54 @@ public class MenuItemServiceTests
         var result = await _sut.GetAllAsync();
 
         Assert.That(result, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetByIdAsync_ShouldThrowKeyNotFoundException_WhenMenuItemDoesNotExist()
+    {
+        var id = Guid.NewGuid();
+
+        _menuItemRepositoryMock
+            .Setup(repository => repository.GetByIdAsync(id))
+            .ReturnsAsync((MenuItem?)null);
+
+        var action = async () => await _sut.GetByIdAsync(id);
+
+        Assert.That(action, Throws.InstanceOf<KeyNotFoundException>()
+            .With.Message.Contains("Item não encontrado"));
+    }
+
+    [Test]
+    public async Task GetByIdAsync_ShouldReturnMappedDto_WhenMenuItemExists()
+    {
+        var entity = new MenuItem
+        {
+            Id = Guid.NewGuid(),
+            Name = "X Burger",
+            Price = 5.00f,
+            Type = MenuItemType.Main
+        };
+
+        var mapped = new MenuItemDTO
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Price = entity.Price,
+            Type = entity.Type
+        };
+
+        _menuItemRepositoryMock
+            .Setup(repository => repository.GetByIdAsync(entity.Id))
+            .ReturnsAsync(entity);
+        _mapperMock
+            .Setup(mapper => mapper.Map<MenuItemDTO>(entity))
+            .Returns(mapped);
+
+        var result = await _sut.GetByIdAsync(entity.Id);
+
+        _menuItemRepositoryMock.Verify(repository => repository.GetByIdAsync(entity.Id), Times.Once);
+        _mapperMock.Verify(mapper => mapper.Map<MenuItemDTO>(entity), Times.Once);
+        Assert.That(result, Is.SameAs(mapped));
     }
 
     private static void AssertMenuItem(MenuItemDTO actual, Guid id, string name, float price, MenuItemType type)
