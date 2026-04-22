@@ -128,19 +128,16 @@ namespace Application.Services
 
             existingEntity.SubTotal = dto.SubTotal;
             existingEntity.Total = dto.Total;
-            existingEntity.Items.Clear();
 
             var updatedItems = _mapper.Map<IList<OrderItem>>(dto.Items);
             foreach (var item in updatedItems)
             {
                 item.OrderId = existingEntity.Id;
-                item.Order = existingEntity;
-                existingEntity.Items.Add(item);
             }
 
             existingEntity.CreatedAt = createdAt;
 
-            await _orderRepository.UpdateAsync(existingEntity);
+            await _orderRepository.ReplaceItemsAsync(existingEntity.Id, updatedItems);
         }
     }
 }

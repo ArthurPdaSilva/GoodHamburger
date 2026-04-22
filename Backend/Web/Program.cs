@@ -52,6 +52,7 @@ namespace Web
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+            app.UseCors("AllowSpecificOrigin");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -62,10 +63,7 @@ namespace Web
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();

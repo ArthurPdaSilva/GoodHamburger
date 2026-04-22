@@ -63,6 +63,11 @@ Para rodar o projeto localmente, você vai precisar de:
 - Modelagem de `Tests`:
   - Apenas o testes unitários para o `OrderService` e `MenuItemService`.
 
+### Frontend
+
+- React + TypeScript, pois é a stack que mais tenho experiência e acredito ser a mais adequada para o desenvolvimento de uma aplicação web moderna.
+- Mui Material UI, pois é uma biblioteca de componentes React simples.
+
 ## O que ficou de fora
 
 ### Backend - Remoções
@@ -71,3 +76,6 @@ Para rodar o projeto localmente, você vai precisar de:
 - Não foi usando o Fluent Validation, pois as validações são simples e podem ser feitas diretamente nos serviços da camada `Application`, evitando a complexidade adicional de configurar e manter uma biblioteca de validação.
 - Autenticação, dado que não há um requisito claro para isso, e o foco do projeto é mais na modelagem do domínio e na implementação dos casos de uso relacionados aos pedidos e itens de menu.
 - Troquei o tipo `float` para `decimal` nas propriedades de preço, subtotal e total, pois o tipo `decimal`, pois revi que o tipo `float` não é recomendado para valores monetários.
+
+### Frontend - Remoções
+- Tailwind CSS, como o foco não era o frontend, optei por usar o Material UI para estilização, pois é uma biblioteca de componentes React simples e rápida de implementar, evitando a necessidade de configurar e escrever estilos personalizados com Tailwind CSS.

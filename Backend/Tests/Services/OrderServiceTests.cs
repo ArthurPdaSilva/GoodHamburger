@@ -454,7 +454,7 @@ public class OrderServiceTests
     }
 
     [Test]
-    public async Task UpdateAsync_ShouldUpdateEntityPreserveCreatedAtAndRelinkItems_WhenOrderExists()
+    public async Task UpdateAsync_ShouldUpdateEntityPreserveCreatedAtAndReplaceItems_WhenOrderExists()
     {
         var id = Guid.NewGuid();
         var createdAt = new DateTime(2026, 4, 20, 10, 0, 0, DateTimeKind.Utc);
@@ -497,13 +497,12 @@ public class OrderServiceTests
 
         await _sut.UpdateAsync(id, dto);
 
-        _orderRepositoryMock.Verify(r => r.UpdateAsync(existingEntity), Times.Once);
+        _orderRepositoryMock.Verify(r => r.ReplaceItemsAsync(existingEntity.Id,
+            It.Is<IList<OrderItem>>(items => items.Count == mappedItems.Count &&
+                                      items.All(i => i.OrderId == existingEntity.Id))), Times.Once);
         Assert.That(existingEntity.SubTotal, Is.EqualTo(dto.SubTotal));
         Assert.That(existingEntity.Total, Is.EqualTo(dto.Total));
         Assert.That(existingEntity.CreatedAt, Is.EqualTo(createdAt));
-        Assert.That(existingEntity.Items.Count, Is.EqualTo(mappedItems.Count));
-        Assert.That(existingEntity.Items.All(i => i.OrderId == existingEntity.Id), Is.True);
-        Assert.That(existingEntity.Items.All(i => ReferenceEquals(i.Order, existingEntity)), Is.True);
     }
 
     private static OrderItemDTO CreateItemDto(MenuItemType type, decimal price, Guid? menuItemId = null)

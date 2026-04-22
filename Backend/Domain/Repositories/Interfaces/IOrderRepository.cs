@@ -8,6 +8,8 @@ namespace Domain.Repositories.Interfaces
 
         public Task UpdateAsync(Order entity);
 
+        public Task ReplaceItemsAsync(Guid orderId, IList<OrderItem> newItems);
+
         public Task<Order?> GetByIdAsync(Guid id);
         public Task<IList<Order>> GetAllAsync();
 

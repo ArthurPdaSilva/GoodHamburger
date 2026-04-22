@@ -38,7 +38,25 @@ namespace Domain.Repositories
 
         public async Task UpdateAsync(Order entity)
         {
-            _context.Orders.Update(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ReplaceItemsAsync(Guid orderId, IList<OrderItem> newItems)
+        {
+            var existingItems = await _context.OrderItems
+                .Where(x => x.OrderId == orderId)
+                .ToListAsync();
+
+            if (existingItems.Any())
+            {
+                _context.OrderItems.RemoveRange(existingItems);
+            }
+
+            if (newItems.Any())
+            {
+                await _context.OrderItems.AddRangeAsync(newItems);
+            }
+
             await _context.SaveChangesAsync();
         }
 
