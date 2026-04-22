@@ -67,6 +67,7 @@ Para rodar o projeto localmente, você vai precisar de:
 
 - React + TypeScript, pois é a stack que mais tenho experiência e acredito ser a mais adequada para o desenvolvimento de uma aplicação web moderna.
 - Mui Material UI, pois é uma biblioteca de componentes React simples.
+- Arquitetura mais genérica sem tanta complexidade.
 
 ## O que ficou de fora
 
@@ -78,4 +79,8 @@ Para rodar o projeto localmente, você vai precisar de:
 - Troquei o tipo `float` para `decimal` nas propriedades de preço, subtotal e total, pois o tipo `decimal`, pois revi que o tipo `float` não é recomendado para valores monetários.
 
 ### Frontend - Remoções
+
 - Tailwind CSS, como o foco não era o frontend, optei por usar o Material UI para estilização, pois é uma biblioteca de componentes React simples e rápida de implementar, evitando a necessidade de configurar e escrever estilos personalizados com Tailwind CSS.
+- React Query, dado que a aplicação é simples e não há uma necessidade clara de gerenciamento avançado de estado ou cache.
+- Cypress: como o foco do projeto é mais na modelagem do domínio e na implementação dos casos de uso relacionados aos pedidos e itens de menu, optei por não incluir testes end-to-end com Cypress.
+- Arquitetura DDD com features, pois era uma aplicação simples
