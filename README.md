@@ -70,3 +70,4 @@ Para rodar o projeto localmente, você vai precisar de:
 - Removi o `IGenericService` e o `IGenericRepository`, pois só o `Order` possui um CRUD completo, seria Over Engineering manter essas interfaces no momento.
 - Não foi usando o Fluent Validation, pois as validações são simples e podem ser feitas diretamente nos serviços da camada `Application`, evitando a complexidade adicional de configurar e manter uma biblioteca de validação.
 - Autenticação, dado que não há um requisito claro para isso, e o foco do projeto é mais na modelagem do domínio e na implementação dos casos de uso relacionados aos pedidos e itens de menu.
+- Troquei o tipo `float` para `decimal` nas propriedades de preço, subtotal e total, pois o tipo `decimal`, pois revi que o tipo `float` não é recomendado para valores monetários.

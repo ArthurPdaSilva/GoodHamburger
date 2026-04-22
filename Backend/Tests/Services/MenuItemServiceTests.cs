@@ -1,4 +1,4 @@
-using Application.DTOs.MenuItemDTOs;
+﻿using Application.DTOs.MenuItemDTOs;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
@@ -33,35 +33,35 @@ public class MenuItemServiceTests
             {
                 Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 Name = "X Burger",
-                Price = 5.00f,
+                Price = 5.00m,
                 Type = MenuItemType.Main
             },
             new()
             {
                 Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                 Name = "X Egg",
-                Price = 4.50f,
+                Price = 4.50m,
                 Type = MenuItemType.Main
             },
             new()
             {
                 Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                 Name = "X Bacon",
-                Price = 7.00f,
+                Price = 7.00m,
                 Type = MenuItemType.Main
             },
             new()
             {
                 Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
                 Name = "Batata frita",
-                Price = 2.00f,
+                Price = 2.00m,
                 Type = MenuItemType.Side
             },
             new()
             {
                 Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
                 Name = "Refrigerante",
-                Price = 2.50f,
+                Price = 2.50m,
                 Type = MenuItemType.Drink
             }
         };
@@ -72,35 +72,35 @@ public class MenuItemServiceTests
             {
                 Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 Name = "X Burger",
-                Price = 5.00f,
+                Price = 5.00m,
                 Type = MenuItemType.Main
             },
             new()
             {
                 Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                 Name = "X Egg",
-                Price = 4.50f,
+                Price = 4.50m,
                 Type = MenuItemType.Main
             },
             new()
             {
                 Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                 Name = "X Bacon",
-                Price = 7.00f,
+                Price = 7.00m,
                 Type = MenuItemType.Main
             },
             new()
             {
                 Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
                 Name = "Batata frita",
-                Price = 2.00f,
+                Price = 2.00m,
                 Type = MenuItemType.Side
             },
             new()
             {
                 Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
                 Name = "Refrigerante",
-                Price = 2.50f,
+                Price = 2.50m,
                 Type = MenuItemType.Drink
             }
         };
@@ -117,11 +117,11 @@ public class MenuItemServiceTests
 
         Assert.Multiple(() =>
         {
-            AssertMenuItem(result[0], Guid.Parse("11111111-1111-1111-1111-111111111111"), "X Burger", 5.00f, MenuItemType.Main);
-            AssertMenuItem(result[1], Guid.Parse("22222222-2222-2222-2222-222222222222"), "X Egg", 4.50f, MenuItemType.Main);
-            AssertMenuItem(result[2], Guid.Parse("33333333-3333-3333-3333-333333333333"), "X Bacon", 7.00f, MenuItemType.Main);
-            AssertMenuItem(result[3], Guid.Parse("44444444-4444-4444-4444-444444444444"), "Batata frita", 2.00f, MenuItemType.Side);
-            AssertMenuItem(result[4], Guid.Parse("55555555-5555-5555-5555-555555555555"), "Refrigerante", 2.50f, MenuItemType.Drink);
+            AssertMenuItem(result[0], Guid.Parse("11111111-1111-1111-1111-111111111111"), "X Burger", 5.00m, MenuItemType.Main);
+            AssertMenuItem(result[1], Guid.Parse("22222222-2222-2222-2222-222222222222"), "X Egg", 4.50m, MenuItemType.Main);
+            AssertMenuItem(result[2], Guid.Parse("33333333-3333-3333-3333-333333333333"), "X Bacon", 7.00m, MenuItemType.Main);
+            AssertMenuItem(result[3], Guid.Parse("44444444-4444-4444-4444-444444444444"), "Batata frita", 2.00m, MenuItemType.Side);
+            AssertMenuItem(result[4], Guid.Parse("55555555-5555-5555-5555-555555555555"), "Refrigerante", 2.50m, MenuItemType.Drink);
         });
     }
 
@@ -163,7 +163,7 @@ public class MenuItemServiceTests
         {
             Id = Guid.NewGuid(),
             Name = "X Burger",
-            Price = 5.00f,
+            Price = 5.00m,
             Type = MenuItemType.Main
         };
 
@@ -189,7 +189,7 @@ public class MenuItemServiceTests
         Assert.That(result, Is.SameAs(mapped));
     }
 
-    private static void AssertMenuItem(MenuItemDTO actual, Guid id, string name, float price, MenuItemType type)
+    private static void AssertMenuItem(MenuItemDTO actual, Guid id, string name, decimal price, MenuItemType type)
     {
         Assert.That(actual.Id, Is.EqualTo(id));
         Assert.That(actual.Name, Is.EqualTo(name));
@@ -197,3 +197,4 @@ public class MenuItemServiceTests
         Assert.That(actual.Type, Is.EqualTo(type));
     }
 }
+

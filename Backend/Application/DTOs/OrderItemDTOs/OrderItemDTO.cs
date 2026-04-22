@@ -8,6 +8,6 @@ namespace Application.DTOs.OrderItemDTOs
         public Guid MenuItemId { get; set; }
         public required MenuItemType Type { get; set; }
         public required string Name { get; set; }
-        public float Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

@@ -54,23 +54,23 @@ namespace Application.Services
             }
         }
 
-        private float CalculateSubTotal(IList<OrderItemDTO> items)
+        private decimal CalculateSubTotal(IList<OrderItemDTO> items)
         {
             return items.Sum(i => i.Price);
         }
 
-        private float CalculateTotalWithDiscount(IList<OrderItemDTO> items, float subTotal)
+        private decimal CalculateTotalWithDiscount(IList<OrderItemDTO> items, decimal subTotal)
         {
             var hasSandwich = items.Any(i => i.Type == MenuItemType.Main);
             var hasFries = items.Any(i => i.Type == MenuItemType.Side);
             var hasSoda = items.Any(i => i.Type == MenuItemType.Drink);
-            var discount = 1.0f;
+            var discount = 1.0m;
             if (hasSandwich && hasFries && hasSoda)
-                discount = 0.80f;
+                discount = 0.80m;
             else if (hasSandwich && hasSoda)
-                discount = 0.85f; 
+                discount = 0.85m; 
             else if (hasSandwich && hasFries)
-                discount = 0.90f; 
+                discount = 0.90m; 
             return subTotal * discount;
         }
 

@@ -3,7 +3,7 @@
     public class Order : BaseEntity
     {
         public IList<OrderItem> Items { get; set; } = new List<OrderItem>();
-        public float SubTotal { get; set; }
-        public float Total { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal Total { get; set; }
     }
 }

@@ -31,13 +31,13 @@ public class OrderServiceTests
     {
         var dto = new OrderDTO
         {
-            SubTotal = 999f,
-            Total = 999f,
+            SubTotal = 999m,
+            Total = 999m,
             Items = new List<OrderItemDTO>
         {
-            CreateItemDto(MenuItemType.Main, 5.0f),
-            CreateItemDto(MenuItemType.Side, 2.0f),
-            CreateItemDto(MenuItemType.Drink, 2.5f)
+            CreateItemDto(MenuItemType.Main, 5.0m),
+            CreateItemDto(MenuItemType.Side, 2.0m),
+            CreateItemDto(MenuItemType.Drink, 2.5m)
         }
         };
 
@@ -46,15 +46,15 @@ public class OrderServiceTests
             Id = Guid.NewGuid(),
             Items = new List<OrderItem>
         {
-            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
-            new() { Type = MenuItemType.Side, Name = "Batata frita", Price = 2.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
-            new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 2.5f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+            new() { Type = MenuItemType.Side, Name = "Batata frita", Price = 2.0m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+            new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 2.5m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
         }
         };
 
         _menuItemRepositoryMock
             .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1m, MenuItemType.Main));
 
         _mapperMock
             .Setup(m => m.Map<Order>(dto))
@@ -62,8 +62,8 @@ public class OrderServiceTests
 
         await _sut.CreateAsync(dto);
 
-        Assert.That(dto.SubTotal, Is.EqualTo(9.5f).Within(0.0001f));
-        Assert.That(dto.Total, Is.EqualTo(7.6f).Within(0.0001f));
+        Assert.That(dto.SubTotal, Is.EqualTo(9.5m).Within(0.0001m));
+        Assert.That(dto.Total, Is.EqualTo(7.6m).Within(0.0001m));
     }
 
     [Test]
@@ -73,8 +73,8 @@ public class OrderServiceTests
         {
             Items = new List<OrderItemDTO>
         {
-            CreateItemDto(MenuItemType.Main, 5.0f),
-            CreateItemDto(MenuItemType.Drink, 2.5f)
+            CreateItemDto(MenuItemType.Main, 5.0m),
+            CreateItemDto(MenuItemType.Drink, 2.5m)
         }
         };
 
@@ -83,14 +83,14 @@ public class OrderServiceTests
             Id = Guid.NewGuid(),
             Items = new List<OrderItem>
         {
-            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
-            new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 2.5f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+            new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 2.5m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
         }
         };
 
         _menuItemRepositoryMock
             .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1m, MenuItemType.Main));
 
         _mapperMock
             .Setup(m => m.Map<Order>(dto))
@@ -98,8 +98,8 @@ public class OrderServiceTests
 
         await _sut.CreateAsync(dto);
 
-        Assert.That(dto.SubTotal, Is.EqualTo(7.5f).Within(0.0001f));
-        Assert.That(dto.Total, Is.EqualTo(6.375f).Within(0.0001f));
+        Assert.That(dto.SubTotal, Is.EqualTo(7.5m).Within(0.0001m));
+        Assert.That(dto.Total, Is.EqualTo(6.375m).Within(0.0001m));
     }
 
     [Test]
@@ -109,8 +109,8 @@ public class OrderServiceTests
         {
             Items = new List<OrderItemDTO>
         {
-            CreateItemDto(MenuItemType.Main, 5.0f),
-            CreateItemDto(MenuItemType.Side, 2.0f)
+            CreateItemDto(MenuItemType.Main, 5.0m),
+            CreateItemDto(MenuItemType.Side, 2.0m)
         }
         };
 
@@ -119,14 +119,14 @@ public class OrderServiceTests
             Id = Guid.NewGuid(),
             Items = new List<OrderItem>
         {
-            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
-            new() { Type = MenuItemType.Side, Name = "Batata frita", Price = 2.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+            new() { Type = MenuItemType.Side, Name = "Batata frita", Price = 2.0m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
         }
         };
 
         _menuItemRepositoryMock
             .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1m, MenuItemType.Main));
 
         _mapperMock
             .Setup(m => m.Map<Order>(dto))
@@ -134,8 +134,8 @@ public class OrderServiceTests
 
         await _sut.CreateAsync(dto);
 
-        Assert.That(dto.SubTotal, Is.EqualTo(7.0f).Within(0.0001f));
-        Assert.That(dto.Total, Is.EqualTo(6.3f).Within(0.0001f));
+        Assert.That(dto.SubTotal, Is.EqualTo(7.0m).Within(0.0001m));
+        Assert.That(dto.Total, Is.EqualTo(6.3m).Within(0.0001m));
     }
 
     [Test]
@@ -145,7 +145,7 @@ public class OrderServiceTests
         {
             Items = new List<OrderItemDTO>
         {
-            CreateItemDto(MenuItemType.Main, 5.0f)
+            CreateItemDto(MenuItemType.Main, 5.0m)
         }
         };
 
@@ -154,13 +154,13 @@ public class OrderServiceTests
             Id = Guid.NewGuid(),
             Items = new List<OrderItem>
         {
-            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
         }
         };
 
         _menuItemRepositoryMock
             .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1m, MenuItemType.Main));
 
         _mapperMock
             .Setup(m => m.Map<Order>(dto))
@@ -168,8 +168,8 @@ public class OrderServiceTests
 
         await _sut.CreateAsync(dto);
 
-        Assert.That(dto.SubTotal, Is.EqualTo(5.0f).Within(0.0001f));
-        Assert.That(dto.Total, Is.EqualTo(5.0f).Within(0.0001f));
+        Assert.That(dto.SubTotal, Is.EqualTo(5.0m).Within(0.0001m));
+        Assert.That(dto.Total, Is.EqualTo(5.0m).Within(0.0001m));
     }
 
     [Test]
@@ -180,43 +180,43 @@ public class OrderServiceTests
         {
             Id = id,
             CreatedAt = DateTime.UtcNow,
-            SubTotal = 999f,
-            Total = 999f,
+            SubTotal = 999m,
+            Total = 999m,
             Items = new List<OrderItem>
         {
-            new() { Type = MenuItemType.Main, Name = "Old", Price = 1f, OrderId = id, Order = new Order(), MenuItemId = Guid.NewGuid() }
+            new() { Type = MenuItemType.Main, Name = "Old", Price = 1m, OrderId = id, Order = new Order(), MenuItemId = Guid.NewGuid() }
         }
         };
 
         var dto = new OrderDTO
         {
-            SubTotal = 12345f,
-            Total = 12345f,
+            SubTotal = 12345m,
+            Total = 12345m,
             Items = new List<OrderItemDTO>
         {
-            CreateItemDto(MenuItemType.Main, 5.0f),
-            CreateItemDto(MenuItemType.Drink, 2.5f)
+            CreateItemDto(MenuItemType.Main, 5.0m),
+            CreateItemDto(MenuItemType.Drink, 2.5m)
         }
         };
 
         var mappedItems = new List<OrderItem>
     {
-        new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
-        new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 2.5f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+        new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+        new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 2.5m, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
     };
 
         _orderRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(existingEntity);
         _menuItemRepositoryMock
             .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1m, MenuItemType.Main));
         _mapperMock.Setup(m => m.Map<IList<OrderItem>>(dto.Items)).Returns(mappedItems);
 
         await _sut.UpdateAsync(id, dto);
 
-        Assert.That(dto.SubTotal, Is.EqualTo(7.5f).Within(0.0001f));
-        Assert.That(dto.Total, Is.EqualTo(6.375f).Within(0.0001f));
-        Assert.That(existingEntity.SubTotal, Is.EqualTo(7.5f).Within(0.0001f));
-        Assert.That(existingEntity.Total, Is.EqualTo(6.375f).Within(0.0001f));
+        Assert.That(dto.SubTotal, Is.EqualTo(7.5m).Within(0.0001m));
+        Assert.That(dto.Total, Is.EqualTo(6.375m).Within(0.0001m));
+        Assert.That(existingEntity.SubTotal, Is.EqualTo(7.5m).Within(0.0001m));
+        Assert.That(existingEntity.Total, Is.EqualTo(6.375m).Within(0.0001m));
     }
 
     [Test]
@@ -227,7 +227,7 @@ public class OrderServiceTests
         {
             Items = new List<OrderItemDTO>
             {
-                CreateItemDto(MenuItemType.Main, 10f, missingMenuItemId)
+                CreateItemDto(MenuItemType.Main, 10m, missingMenuItemId)
             }
         };
 
@@ -264,12 +264,12 @@ public class OrderServiceTests
         {
             Items = new List<OrderItemDTO>
             {
-                CreateItemDto(MenuItemType.Main, 10f, menuItemId),
-                CreateItemDto(MenuItemType.Main, 12f, menuItemId)
+                CreateItemDto(MenuItemType.Main, 10m, menuItemId),
+                CreateItemDto(MenuItemType.Main, 12m, menuItemId)
             }
         };
 
-        var menuItem = CreateMenuItem(menuItemId, "X-Burger", 22f, MenuItemType.Main);
+        var menuItem = CreateMenuItem(menuItemId, "X-Burger", 22m, MenuItemType.Main);
 
         _menuItemRepositoryMock
            .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
@@ -288,9 +288,9 @@ public class OrderServiceTests
         {
             Items = new List<OrderItemDTO>
             {
-                CreateItemDto(MenuItemType.Main, 22f),
-                CreateItemDto(MenuItemType.Side, 8f),
-                CreateItemDto(MenuItemType.Drink, 5f)
+                CreateItemDto(MenuItemType.Main, 22m),
+                CreateItemDto(MenuItemType.Side, 8m),
+                CreateItemDto(MenuItemType.Drink, 5m)
             }
         };
 
@@ -299,13 +299,13 @@ public class OrderServiceTests
             Id = Guid.NewGuid(),
             Items = new List<OrderItem>
             {
-                new() { Type = MenuItemType.Main, Name = "X-Burger", Price = 22f, OrderId = Guid.Empty, Order = new Order() },
-                new() { Type = MenuItemType.Side, Name = "Batata", Price = 8f, OrderId = Guid.Empty, Order = new Order() },
-                new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 5f, OrderId = Guid.Empty, Order = new Order() }
+                new() { Type = MenuItemType.Main, Name = "X-Burger", Price = 22m, OrderId = Guid.Empty, Order = new Order() },
+                new() { Type = MenuItemType.Side, Name = "Batata", Price = 8m, OrderId = Guid.Empty, Order = new Order() },
+                new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 5m, OrderId = Guid.Empty, Order = new Order() }
             }
         };
 
-        var menuItem = CreateMenuItem(Guid.NewGuid(), "X-Burger", 22f, MenuItemType.Main);
+        var menuItem = CreateMenuItem(Guid.NewGuid(), "X-Burger", 22m, MenuItemType.Main);
 
         _mapperMock
             .Setup(m => m.Map<Order>(dto))
@@ -328,7 +328,7 @@ public class OrderServiceTests
         var id = Guid.NewGuid();
         _orderRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync((Order?)null);
 
-        var menuItem = CreateMenuItem(Guid.NewGuid(), "X-Burger", 22f, MenuItemType.Main);
+        var menuItem = CreateMenuItem(Guid.NewGuid(), "X-Burger", 22m, MenuItemType.Main);
 
         _menuItemRepositoryMock
             .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
@@ -356,14 +356,14 @@ public class OrderServiceTests
     {
         var entities = new List<Order>
         {
-            new() { Id = Guid.NewGuid(), SubTotal = 30f, Total = 27f },
-            new() { Id = Guid.NewGuid(), SubTotal = 15f, Total = 15f }
+            new() { Id = Guid.NewGuid(), SubTotal = 30m, Total = 27m },
+            new() { Id = Guid.NewGuid(), SubTotal = 15m, Total = 15m }
         };
 
         var mapped = new List<OrderListDTO>
         {
-            new() { Id = entities[0].Id, SubTotal = 30f, Total = 27f, ItemsCount = 2 },
-            new() { Id = entities[1].Id, SubTotal = 15f, Total = 15f, ItemsCount = 1 }
+            new() { Id = entities[0].Id, SubTotal = 30m, Total = 27m, ItemsCount = 2 },
+            new() { Id = entities[1].Id, SubTotal = 15m, Total = 15m, ItemsCount = 1 }
         };
 
         _orderRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(entities);
@@ -389,8 +389,8 @@ public class OrderServiceTests
     [Test]
     public async Task GetByIdAsync_ShouldReturnMappedDto_WhenOrderExists()
     {
-        var entity = new Order { Id = Guid.NewGuid(), SubTotal = 20f, Total = 18f };
-        var mapped = new OrderDTO { Id = entity.Id, SubTotal = 20f, Total = 18f };
+        var entity = new Order { Id = Guid.NewGuid(), SubTotal = 20m, Total = 18m };
+        var mapped = new OrderDTO { Id = entity.Id, SubTotal = 20m, Total = 18m };
 
         _orderRepositoryMock.Setup(r => r.GetByIdAsync(entity.Id)).ReturnsAsync(entity);
         _mapperMock.Setup(m => m.Map<OrderDTO>(entity)).Returns(mapped);
@@ -409,12 +409,12 @@ public class OrderServiceTests
         {
             Items = new List<OrderItemDTO>
             {
-                CreateItemDto(MenuItemType.Drink, 3f, menuItemId),
-                CreateItemDto(MenuItemType.Drink, 4f, menuItemId)
+                CreateItemDto(MenuItemType.Drink, 3m, menuItemId),
+                CreateItemDto(MenuItemType.Drink, 4m, menuItemId)
             }
         };
 
-        var menuItem = CreateMenuItem(menuItemId, "X-Burger", 22f, MenuItemType.Main);
+        var menuItem = CreateMenuItem(menuItemId, "X-Burger", 22m, MenuItemType.Main);
 
         _menuItemRepositoryMock
            .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
@@ -435,11 +435,11 @@ public class OrderServiceTests
         {
             Items = new List<OrderItemDTO>
             {
-                CreateItemDto(MenuItemType.Main, 22f, menuItemId)
+                CreateItemDto(MenuItemType.Main, 22m, menuItemId)
             }
         };
 
-        var menuItem = CreateMenuItem(menuItemId, "X-Burger", 22f, MenuItemType.Main);
+        var menuItem = CreateMenuItem(menuItemId, "X-Burger", 22m, MenuItemType.Main);
 
         _menuItemRepositoryMock
            .Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>()))
@@ -462,32 +462,32 @@ public class OrderServiceTests
         {
             Id = id,
             CreatedAt = createdAt,
-            SubTotal = 50f,
-            Total = 50f,
+            SubTotal = 50m,
+            Total = 50m,
             Items = new List<OrderItem>
             {
-                new() { Type = MenuItemType.Main, Name = "Item antigo", Price = 50f, OrderId = id, Order = new Order() }
+                new() { Type = MenuItemType.Main, Name = "Item antigo", Price = 50m, OrderId = id, Order = new Order() }
             }
         };
 
         var dto = new OrderDTO
         {
-            SubTotal = 35f,
-            Total = 31.5f,
+            SubTotal = 35m,
+            Total = 31.5m,
             Items = new List<OrderItemDTO>
             {
-                CreateItemDto(MenuItemType.Main, 25f),
-                CreateItemDto(MenuItemType.Side, 10f)
+                CreateItemDto(MenuItemType.Main, 25m),
+                CreateItemDto(MenuItemType.Side, 10m)
             }
         };
 
         var mappedItems = new List<OrderItem>
         {
-            new() { Type = MenuItemType.Main, Name = "X-Burger", Price = 25f, OrderId = Guid.Empty, Order = new Order() },
-            new() { Type = MenuItemType.Side, Name = "Batata", Price = 10f, OrderId = Guid.Empty, Order = new Order() }
+            new() { Type = MenuItemType.Main, Name = "X-Burger", Price = 25m, OrderId = Guid.Empty, Order = new Order() },
+            new() { Type = MenuItemType.Side, Name = "Batata", Price = 10m, OrderId = Guid.Empty, Order = new Order() }
         };
 
-        var menuItem = CreateMenuItem(Guid.NewGuid(), "X-Burger", 25f, MenuItemType.Main);
+        var menuItem = CreateMenuItem(Guid.NewGuid(), "X-Burger", 25m, MenuItemType.Main);
 
         _orderRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(existingEntity);
         _mapperMock.Setup(m => m.Map<IList<OrderItem>>(dto.Items)).Returns(mappedItems);
@@ -506,7 +506,7 @@ public class OrderServiceTests
         Assert.That(existingEntity.Items.All(i => ReferenceEquals(i.Order, existingEntity)), Is.True);
     }
 
-    private static OrderItemDTO CreateItemDto(MenuItemType type, float price, Guid? menuItemId = null)
+    private static OrderItemDTO CreateItemDto(MenuItemType type, decimal price, Guid? menuItemId = null)
     {
         return new OrderItemDTO
         {
@@ -517,7 +517,7 @@ public class OrderServiceTests
         };
     }
 
-    private static MenuItem CreateMenuItem(Guid id, string name, float price, MenuItemType type)
+    private static MenuItem CreateMenuItem(Guid id, string name, decimal price, MenuItemType type)
     {
         return new MenuItem
         {
@@ -528,3 +528,4 @@ public class OrderServiceTests
         };
     }
 }
+
