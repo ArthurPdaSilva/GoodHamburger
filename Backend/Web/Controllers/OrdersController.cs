@@ -18,8 +18,15 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IList<OrderListDTO>>> GetAllAsync()
         {
-            var orders = await _orderService.GetAllAsync();
-            return Ok(orders);
+            try
+            {
+                var orders = await _orderService.GetAllAsync();
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
@@ -39,8 +46,15 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<ActionResult<OrderDTO>> CreateAsync([FromBody] OrderDTO dto)
         {
-            await _orderService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = dto.Id }, dto);
+            try
+            {
+                await _orderService.CreateAsync(dto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
