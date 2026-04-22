@@ -27,6 +27,199 @@ public class OrderServiceTests
     }
 
     [Test]
+    public async Task CreateAsync_ShouldCalculate20PercentDiscount_WhenOrderHasMainSideAndDrink()
+    {
+        var dto = new OrderDTO
+        {
+            SubTotal = 999f,
+            Total = 999f,
+            Items = new List<OrderItemDTO>
+        {
+            CreateItemDto(MenuItemType.Main, 5.0f),
+            CreateItemDto(MenuItemType.Side, 2.0f),
+            CreateItemDto(MenuItemType.Drink, 2.5f)
+        }
+        };
+
+        var entity = new Order
+        {
+            Id = Guid.NewGuid(),
+            Items = new List<OrderItem>
+        {
+            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+            new() { Type = MenuItemType.Side, Name = "Batata frita", Price = 2.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+            new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 2.5f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+        }
+        };
+
+        _menuItemRepositoryMock
+            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+
+        _mapperMock
+            .Setup(m => m.Map<Order>(dto))
+            .Returns(entity);
+
+        await _sut.CreateAsync(dto);
+
+        Assert.That(dto.SubTotal, Is.EqualTo(9.5f).Within(0.0001f));
+        Assert.That(dto.Total, Is.EqualTo(7.6f).Within(0.0001f));
+    }
+
+    [Test]
+    public async Task CreateAsync_ShouldCalculate15PercentDiscount_WhenOrderHasMainAndDrink()
+    {
+        var dto = new OrderDTO
+        {
+            Items = new List<OrderItemDTO>
+        {
+            CreateItemDto(MenuItemType.Main, 5.0f),
+            CreateItemDto(MenuItemType.Drink, 2.5f)
+        }
+        };
+
+        var entity = new Order
+        {
+            Id = Guid.NewGuid(),
+            Items = new List<OrderItem>
+        {
+            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+            new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 2.5f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+        }
+        };
+
+        _menuItemRepositoryMock
+            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+
+        _mapperMock
+            .Setup(m => m.Map<Order>(dto))
+            .Returns(entity);
+
+        await _sut.CreateAsync(dto);
+
+        Assert.That(dto.SubTotal, Is.EqualTo(7.5f).Within(0.0001f));
+        Assert.That(dto.Total, Is.EqualTo(6.375f).Within(0.0001f));
+    }
+
+    [Test]
+    public async Task CreateAsync_ShouldCalculate10PercentDiscount_WhenOrderHasMainAndSide()
+    {
+        var dto = new OrderDTO
+        {
+            Items = new List<OrderItemDTO>
+        {
+            CreateItemDto(MenuItemType.Main, 5.0f),
+            CreateItemDto(MenuItemType.Side, 2.0f)
+        }
+        };
+
+        var entity = new Order
+        {
+            Id = Guid.NewGuid(),
+            Items = new List<OrderItem>
+        {
+            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+            new() { Type = MenuItemType.Side, Name = "Batata frita", Price = 2.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+        }
+        };
+
+        _menuItemRepositoryMock
+            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+
+        _mapperMock
+            .Setup(m => m.Map<Order>(dto))
+            .Returns(entity);
+
+        await _sut.CreateAsync(dto);
+
+        Assert.That(dto.SubTotal, Is.EqualTo(7.0f).Within(0.0001f));
+        Assert.That(dto.Total, Is.EqualTo(6.3f).Within(0.0001f));
+    }
+
+    [Test]
+    public async Task CreateAsync_ShouldNotApplyDiscount_WhenOrderDoesNotMatchAnyCombo()
+    {
+        var dto = new OrderDTO
+        {
+            Items = new List<OrderItemDTO>
+        {
+            CreateItemDto(MenuItemType.Main, 5.0f)
+        }
+        };
+
+        var entity = new Order
+        {
+            Id = Guid.NewGuid(),
+            Items = new List<OrderItem>
+        {
+            new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+        }
+        };
+
+        _menuItemRepositoryMock
+            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+
+        _mapperMock
+            .Setup(m => m.Map<Order>(dto))
+            .Returns(entity);
+
+        await _sut.CreateAsync(dto);
+
+        Assert.That(dto.SubTotal, Is.EqualTo(5.0f).Within(0.0001f));
+        Assert.That(dto.Total, Is.EqualTo(5.0f).Within(0.0001f));
+    }
+
+    [Test]
+    public async Task UpdateAsync_ShouldRecalculateTotals_IgnoringIncomingValues()
+    {
+        var id = Guid.NewGuid();
+        var existingEntity = new Order
+        {
+            Id = id,
+            CreatedAt = DateTime.UtcNow,
+            SubTotal = 999f,
+            Total = 999f,
+            Items = new List<OrderItem>
+        {
+            new() { Type = MenuItemType.Main, Name = "Old", Price = 1f, OrderId = id, Order = new Order(), MenuItemId = Guid.NewGuid() }
+        }
+        };
+
+        var dto = new OrderDTO
+        {
+            SubTotal = 12345f,
+            Total = 12345f,
+            Items = new List<OrderItemDTO>
+        {
+            CreateItemDto(MenuItemType.Main, 5.0f),
+            CreateItemDto(MenuItemType.Drink, 2.5f)
+        }
+        };
+
+        var mappedItems = new List<OrderItem>
+    {
+        new() { Type = MenuItemType.Main, Name = "X Burger", Price = 5.0f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() },
+        new() { Type = MenuItemType.Drink, Name = "Refrigerante", Price = 2.5f, OrderId = Guid.Empty, Order = new Order(), MenuItemId = Guid.NewGuid() }
+    };
+
+        _orderRepositoryMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(existingEntity);
+        _menuItemRepositoryMock
+            .Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(CreateMenuItem(Guid.NewGuid(), "Any", 1f, MenuItemType.Main));
+        _mapperMock.Setup(m => m.Map<IList<OrderItem>>(dto.Items)).Returns(mappedItems);
+
+        await _sut.UpdateAsync(id, dto);
+
+        Assert.That(dto.SubTotal, Is.EqualTo(7.5f).Within(0.0001f));
+        Assert.That(dto.Total, Is.EqualTo(6.375f).Within(0.0001f));
+        Assert.That(existingEntity.SubTotal, Is.EqualTo(7.5f).Within(0.0001f));
+        Assert.That(existingEntity.Total, Is.EqualTo(6.375f).Within(0.0001f));
+    }
+
+    [Test]
     public void CreateAsync_ShouldThrowArgumentException_WhenMenuItemDoesNotExist()
     {
         var missingMenuItemId = Guid.NewGuid();
