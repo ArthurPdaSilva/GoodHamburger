@@ -72,7 +72,7 @@ Para rodar o projeto localmente, você vai precisar de:
 - Modelagem de `Tests`:
   - Apenas o testes unitários para o `OrderService` e `MenuItemService`.
 
-### Frontend 
+### Frontend
 
 - React + TypeScript, pois é a stack que mais tenho experiência e acredito ser a mais adequada para o desenvolvimento de uma aplicação web moderna.
 - Mui Material UI, pois é uma biblioteca de componentes React simples.
