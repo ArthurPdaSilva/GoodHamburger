@@ -40,7 +40,7 @@ Para rodar o projeto localmente, você vai precisar de:
 1. Navegue até a pasta `frontend/` no terminal.
 2. Instale as dependências com `npm install`.
 3. Configure a variável de ambiente `VITE_API_URL` para apontar para a URL da API backend (ex.: `http://localhost:5000`).
-4. Inicie a aplicação com `npm start`.
+4. Inicie a aplicação com `npm run dev`.
 
 ## Decisão de arquitetura
 
