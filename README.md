@@ -23,7 +23,7 @@ Para rodar o projeto localmente, você vai precisar de:
 
 ## Backend (recomendado: Visual Studio)
 
-### Passo a passo
+### Passo a passo - Back
 
 1. Abra a solução `Backend.slnx` no Visual Studio.  
 2. Defina o projeto **Web.csproj** como *Startup Project*.  
@@ -32,6 +32,15 @@ Para rodar o projeto localmente, você vai precisar de:
 5. Restaure e compile a solução.  
 6. Execute utilizando o perfil **https** conforme definido no `launchSettings.json`.  
 7. Acesse o Swagger na URL apresentada ao iniciar a API (ex.: `/swagger/index.html`).
+
+## Frontend
+
+### Passo a passo - Front
+
+1. Navegue até a pasta `frontend/` no terminal.
+2. Instale as dependências com `npm install`.
+3. Configure a variável de ambiente `VITE_API_URL` para apontar para a URL da API backend (ex.: `http://localhost:5000`).
+4. Inicie a aplicação com `npm start`.
 
 ## Decisão de arquitetura
 
@@ -84,3 +93,4 @@ Para rodar o projeto localmente, você vai precisar de:
 - React Query, dado que a aplicação é simples e não há uma necessidade clara de gerenciamento avançado de estado ou cache.
 - Cypress: como o foco do projeto é mais na modelagem do domínio e na implementação dos casos de uso relacionados aos pedidos e itens de menu, optei por não incluir testes end-to-end com Cypress.
 - Arquitetura DDD com features, pois era uma aplicação simples
+- Next.js, eu não usei, pois o React tradicional já era o suficiente.
